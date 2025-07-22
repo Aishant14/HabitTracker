@@ -1,0 +1,170 @@
+{% extends 'habits/base.html' %}
+
+{% block title %}Add Habit - HabitHero{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="bi bi-plus-circle me-2"></i>Create a New Habit</h3>
+                <p class="text-muted mb-0">Start building better habits today!</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-tag me-2"></i>Habit Name *
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                        {% endif %}
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.name.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-journal-text me-2"></i>Description
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.help_text %}
+                            <div class="form-text">{{ form.description.help_text }}</div>
+                        {% endif %}
+                        {% if form.description.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.description.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.color.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-palette me-2"></i>Habit Color
+                        </label>
+                        <div class="d-flex align-items-center gap-3">
+                            {{ form.color }}
+                            <span class="text-muted">Choose a color to represent your habit</span>
+                        </div>
+                        {% if form.color.help_text %}
+                            <div class="form-text">{{ form.color.help_text }}</div>
+                        {% endif %}
+                        {% if form.color.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.color.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-lg me-2"></i>Create Habit
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Habit Examples Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Popular Habit Ideas</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="me-3" style="color: #3498db;">
+                                <i class="bi bi-droplet-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <strong>Drink Water</strong>
+                                <small class="d-block text-muted">Stay hydrated throughout the day</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="me-3" style="color: #2ecc71;">
+                                <i class="bi bi-heart-pulse fs-4"></i>
+                            </div>
+                            <div>
+                                <strong>Exercise</strong>
+                                <small class="d-block text-muted">30 minutes of physical activity</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="me-3" style="color: #f39c12;">
+                                <i class="bi bi-book fs-4"></i>
+                            </div>
+                            <div>
+                                <strong>Read</strong>
+                                <small class="d-block text-muted">Read for at least 20 minutes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="me-3" style="color: #9b59b6;">
+                                <i class="bi bi-moon-stars fs-4"></i>
+                            </div>
+                            <div>
+                                <strong>Sleep Early</strong>
+                                <small class="d-block text-muted">Get to bed before 10 PM</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    input[type="color"] {
+        width: 60px;
+        height: 45px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .habit-example:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

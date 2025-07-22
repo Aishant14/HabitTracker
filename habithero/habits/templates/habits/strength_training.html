@@ -1,0 +1,786 @@
+{% extends 'habits/base.html' %}
+
+{% block title %}Strength Training - HabitHero{% endblock %}
+
+{% block content %}
+<div class="strength-training-container">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4 text-gradient">💪 Strength Training</h1>
+            <p class="lead">Master proper exercise techniques and build strength</p>
+        </div>
+    </div>
+    
+    <!-- Muscle Group Filter Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card filter-card">
+                <div class="card-body">
+                    <h5><i class="bi bi-funnel"></i> Choose Muscle Group</h5>
+                    <div class="muscle-filter-buttons">
+                        <button class="btn muscle-btn active" data-muscle="all">
+                            <i class="bi bi-grid-3x3-gap"></i> All Exercises
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="chest">
+                            <i class="bi bi-heart-fill"></i> Chest
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="shoulders">
+                            <i class="bi bi-arrow-up-circle"></i> Shoulders
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="arms">
+                            <i class="bi bi-magic"></i> Arms
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="back">
+                            <i class="bi bi-shield-fill"></i> Back
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="abs">
+                            <i class="bi bi-hexagon-fill"></i> Core
+                        </button>
+                        <button class="btn muscle-btn" data-muscle="legs">
+                            <i class="bi bi-lightning-charge"></i> Legs
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise Cards Grid -->
+    <div class="row" id="exercise-grid">
+        <!-- Exercises will be loaded here -->
+    </div>
+</div>
+
+<style>
+.strength-training-container {
+    margin-top: 20px;
+}
+
+.filter-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.muscle-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.muscle-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.muscle-btn:hover {
+    background: #f1f5f9;
+}
+
+.muscle-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.exercise-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.exercise-header {
+    background: #f8fafc;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.exercise-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.exercise-meta {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.difficulty {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.difficulty.beginner {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.difficulty.intermediate {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.difficulty.advanced {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.exercise-body {
+    padding: 20px;
+}
+
+.technique-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.step-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.step-list li {
+    background: #f8fafc;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    border-left: 3px solid #3b82f6;
+    position: relative;
+    padding-left: 45px;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.step-list li::before {
+    content: attr(data-step);
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #3b82f6;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tips-list li {
+    background: #f0fdf4;
+    color: #374151;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border-left: 3px solid #10b981;
+    font-size: 0.85rem;
+    position: relative;
+    padding-left: 35px;
+}
+
+.tips-list li::before {
+    content: "💡";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+}
+
+.common-mistakes {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 15px;
+}
+
+.common-mistakes h6 {
+    color: #dc2626;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.mistake-item {
+    background: white;
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.text-gradient {
+    color: #3b82f6;
+}
+
+.add-to-workout-btn {
+    background: #10b981;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.add-to-workout-btn:hover {
+    background: #059669;
+}
+
+/* Dark theme compatibility */
+@media (prefers-color-scheme: dark) {
+    .filter-card, .exercise-card {
+        background: rgba(30, 41, 59, 0.9);
+        border-color: rgba(71, 85, 105, 0.3);
+    }
+    
+    .exercise-header {
+        background: rgba(51, 65, 85, 0.5);
+    }
+    
+    .exercise-title {
+        color: var(--text-primary);
+    }
+    
+    .step-list li {
+        background: rgba(51, 65, 85, 0.3);
+        color: var(--text-primary);
+    }
+    
+    .tips-list li {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--text-primary);
+    }
+    
+    .common-mistakes {
+        background: rgba(239, 68, 68, 0.1);
+    }
+    
+    .mistake-item {
+        background: rgba(51, 65, 85, 0.3);
+        color: var(--text-secondary);
+    }
+}
+
+@media (max-width: 768px) {
+    .muscle-filter-buttons {
+        justify-content: center;
+    }
+    
+    .exercise-meta {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const muscleButtons = document.querySelectorAll('.muscle-btn');
+    const exerciseGrid = document.getElementById('exercise-grid');
+    
+    // Comprehensive exercise data with detailed techniques
+    const exerciseData = {
+        'chest': [
+            {
+                name: 'Push-ups',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '10-15',
+                equipment: 'Bodyweight',
+                muscle: 'Chest',
+                steps: [
+                    'Start in a plank position with hands slightly wider than shoulders',
+                    'Keep your body in a straight line from head to heels',
+                    'Lower your chest until it nearly touches the ground',
+                    'Push through your palms to return to starting position',
+                    'Keep your core engaged throughout the movement'
+                ],
+                tips: [
+                    'Keep your elbows at a 45-degree angle from your body',
+                    'Don\'t let your hips sag or pike up',
+                    'Control the descent - don\'t just drop down',
+                    'Breathe in on the way down, out on the way up'
+                ],
+                mistakes: [
+                    'Flaring elbows too wide',
+                    'Not going through full range of motion',
+                    'Poor body alignment'
+                ]
+            },
+            {
+                name: 'Chest Press',
+                difficulty: 'intermediate',
+                sets: 3,
+                reps: '8-12',
+                equipment: 'Dumbbells/Barbell',
+                muscle: 'Chest',
+                steps: [
+                    'Lie flat on a bench with feet firmly planted on the ground',
+                    'Hold weights with arms extended directly above your chest',
+                    'Lower the weights slowly until they reach chest level',
+                    'Press the weights back up to starting position',
+                    'Keep your shoulder blades pulled back throughout'
+                ],
+                tips: [
+                    'Keep a slight arch in your back',
+                    'Don\'t bounce the weight off your chest',
+                    'Control both the lifting and lowering phases',
+                    'Keep your wrists straight and stable'
+                ],
+                mistakes: [
+                    'Pressing too fast without control',
+                    'Not maintaining proper back position',
+                    'Using too much weight too soon'
+                ]
+            }
+        ],
+        'shoulders': [
+            {
+                name: 'Overhead Press',
+                difficulty: 'intermediate',
+                sets: 3,
+                reps: '8-10',
+                equipment: 'Dumbbells/Barbell',
+                muscle: 'Shoulders',
+                steps: [
+                    'Stand with feet shoulder-width apart, core engaged',
+                    'Hold weights at shoulder level with palms facing forward',
+                    'Press the weights straight up overhead',
+                    'Lower with control back to shoulder level',
+                    'Keep your head in neutral position'
+                ],
+                tips: [
+                    'Don\'t arch your back excessively',
+                    'Keep your core tight throughout',
+                    'Press straight up, not forward',
+                    'Use a full range of motion'
+                ],
+                mistakes: [
+                    'Pressing the weight too far forward',
+                    'Using momentum instead of muscle control',
+                    'Not engaging the core properly'
+                ]
+            },
+            {
+                name: 'Lateral Raises',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '12-15',
+                equipment: 'Dumbbells',
+                muscle: 'Shoulders',
+                steps: [
+                    'Stand with feet hip-width apart, holding dumbbells at your sides',
+                    'Keep a slight bend in your elbows',
+                    'Raise the weights out to your sides until parallel with the floor',
+                    'Pause briefly at the top',
+                    'Lower slowly back to starting position'
+                ],
+                tips: [
+                    'Lead with your pinkies, not your thumbs',
+                    'Keep the movement controlled and smooth',
+                    'Don\'t swing the weights up',
+                    'Focus on feeling the burn in your shoulders'
+                ],
+                mistakes: [
+                    'Using too much weight',
+                    'Swinging or using momentum',
+                    'Raising arms too high above shoulder level'
+                ]
+            }
+        ],
+        'arms': [
+            {
+                name: 'Bicep Curls',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '10-12',
+                equipment: 'Dumbbells',
+                muscle: 'Biceps',
+                steps: [
+                    'Stand with feet hip-width apart, holding dumbbells at your sides',
+                    'Keep your elbows close to your torso',
+                    'Curl the weights up by flexing your biceps',
+                    'Squeeze at the top of the movement',
+                    'Lower slowly back to starting position'
+                ],
+                tips: [
+                    'Don\'t swing your body to help lift the weight',
+                    'Keep your wrists straight and strong',
+                    'Focus on the squeeze at the top',
+                    'Control the lowering phase'
+                ],
+                mistakes: [
+                    'Using too much weight and poor form',
+                    'Swinging the body for momentum',
+                    'Not controlling the eccentric (lowering) phase'
+                ]
+            },
+            {
+                name: 'Tricep Dips',
+                difficulty: 'intermediate',
+                sets: 3,
+                reps: '8-12',
+                equipment: 'Bodyweight/Bench',
+                muscle: 'Triceps',
+                steps: [
+                    'Sit on the edge of a bench with hands next to your hips',
+                    'Slide your hips off the bench, supporting your weight with your arms',
+                    'Lower your body by bending your elbows to about 90 degrees',
+                    'Push through your palms to return to starting position',
+                    'Keep your legs either bent (easier) or straight (harder)'
+                ],
+                tips: [
+                    'Keep your body close to the bench',
+                    'Don\'t go too low if you feel shoulder discomfort',
+                    'Keep your elbows pointing backward, not out to sides',
+                    'Engage your core throughout'
+                ],
+                mistakes: [
+                    'Going too low and straining shoulders',
+                    'Flaring elbows out to the sides',
+                    'Not using full range of motion'
+                ]
+            }
+        ],
+        'back': [
+            {
+                name: 'Pull-ups',
+                difficulty: 'advanced',
+                sets: 3,
+                reps: '5-10',
+                equipment: 'Pull-up Bar',
+                muscle: 'Back',
+                steps: [
+                    'Hang from a pull-up bar with palms facing away from you',
+                    'Keep your hands slightly wider than shoulder-width',
+                    'Pull yourself up until your chin clears the bar',
+                    'Lower yourself slowly back to full hang',
+                    'Keep your core engaged throughout'
+                ],
+                tips: [
+                    'Start with assisted pull-ups if you can\'t do full ones',
+                    'Focus on pulling with your back muscles, not just arms',
+                    'Don\'t kip or swing your body',
+                    'Full range of motion is key'
+                ],
+                mistakes: [
+                    'Using momentum or kipping',
+                    'Not going through full range of motion',
+                    'Neglecting the negative (lowering) portion'
+                ]
+            },
+            {
+                name: 'Bent-Over Rows',
+                difficulty: 'intermediate',
+                sets: 3,
+                reps: '8-12',
+                equipment: 'Dumbbells/Barbell',
+                muscle: 'Back',
+                steps: [
+                    'Stand with feet hip-width apart, holding weights',
+                    'Hinge at the hips, keeping your back straight',
+                    'Let the weights hang with arms extended',
+                    'Pull the weights up to your lower ribs',
+                    'Lower slowly back to starting position'
+                ],
+                tips: [
+                    'Keep your back neutral, not rounded',
+                    'Think about squeezing your shoulder blades together',
+                    'Don\'t let the weights swing',
+                    'Keep your neck in neutral position'
+                ],
+                mistakes: [
+                    'Rounding the back',
+                    'Using too much weight and poor form',
+                    'Not retracting shoulder blades properly'
+                ]
+            }
+        ],
+        'abs': [
+            {
+                name: 'Plank',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '30-60 seconds',
+                equipment: 'Bodyweight',
+                muscle: 'Core',
+                steps: [
+                    'Start in a push-up position on your forearms',
+                    'Keep your body in a straight line from head to heels',
+                    'Engage your core muscles',
+                    'Hold the position while breathing normally',
+                    'Don\'t let your hips sag or pike up'
+                ],
+                tips: [
+                    'Focus on quality over duration',
+                    'Keep your neck in neutral position',
+                    'Breathe steadily throughout the hold',
+                    'Engage your glutes to help maintain alignment'
+                ],
+                mistakes: [
+                    'Letting hips sag toward the ground',
+                    'Hiking hips too high',
+                    'Holding breath instead of breathing normally'
+                ]
+            },
+            {
+                name: 'Crunches',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '15-20',
+                equipment: 'Bodyweight',
+                muscle: 'Core',
+                steps: [
+                    'Lie on your back with knees bent and feet flat on floor',
+                    'Place hands lightly behind your head or across chest',
+                    'Lift your shoulder blades off the ground',
+                    'Focus on curling your ribs toward your pelvis',
+                    'Lower slowly back to starting position'
+                ],
+                tips: [
+                    'Don\'t pull on your neck with your hands',
+                    'Focus on the quality of each rep, not quantity',
+                    'Keep your lower back pressed to the floor',
+                    'Exhale as you crunch up'
+                ],
+                mistakes: [
+                    'Pulling on the neck',
+                    'Using momentum instead of muscle control',
+                    'Not engaging the core properly'
+                ]
+            }
+        ],
+        'legs': [
+            {
+                name: 'Squats',
+                difficulty: 'beginner',
+                sets: 3,
+                reps: '12-15',
+                equipment: 'Bodyweight',
+                muscle: 'Legs',
+                steps: [
+                    'Stand with feet shoulder-width apart, toes slightly turned out',
+                    'Keep your chest up and core engaged',
+                    'Lower by pushing your hips back and bending your knees',
+                    'Go down until your thighs are parallel to the floor',
+                    'Drive through your heels to return to standing'
+                ],
+                tips: [
+                    'Keep your knees in line with your toes',
+                    'Don\'t let your knees cave inward',
+                    'Keep your weight on your heels and mid-foot',
+                    'Imagine sitting back into a chair'
+                ],
+                mistakes: [
+                    'Knees caving inward',
+                    'Not going deep enough',
+                    'Leaning too far forward'
+                ]
+            },
+            {
+                name: 'Lunges',
+                difficulty: 'intermediate',
+                sets: 3,
+                reps: '10-12 each leg',
+                equipment: 'Bodyweight',
+                muscle: 'Legs',
+                steps: [
+                    'Stand tall with feet hip-width apart',
+                    'Step forward with one leg into a long stride',
+                    'Lower your body until both knees are at 90-degree angles',
+                    'Your front knee should be over your ankle, not pushed out past toes',
+                    'Push off your front foot to return to starting position'
+                ],
+                tips: [
+                    'Keep your torso upright throughout the movement',
+                    'Don\'t let your front knee go past your toes',
+                    'Step into a comfortable stride length',
+                    'Alternate legs or complete all reps on one side first'
+                ],
+                mistakes: [
+                    'Taking too short or too long steps',
+                    'Leaning forward excessively',
+                    'Not lowering far enough'
+                ]
+            }
+        ]
+    };
+    
+    // Initialize with all exercises
+    displayExercises('all');
+    
+    // Add click handlers to muscle filter buttons
+    muscleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            muscleButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Get muscle group and display exercises
+            const muscleGroup = this.dataset.muscle;
+            displayExercises(muscleGroup);
+        });
+    });
+    
+    function displayExercises(muscleGroup) {
+        let exercises = [];
+        
+        if (muscleGroup === 'all') {
+            // Show all exercises
+            exercises = Object.values(exerciseData).flat();
+        } else {
+            // Show exercises for specific muscle group
+            exercises = exerciseData[muscleGroup] || [];
+        }
+        
+        let html = '';
+        
+        exercises.forEach(exercise => {
+            html += createExerciseCard(exercise);
+        });
+        
+        if (exercises.length === 0) {
+            html = `
+                <div class="col-12 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="bi bi-exclamation-circle display-1 text-muted mb-3"></i>
+                            <h4>No exercises found</h4>
+                            <p class="text-muted">Exercises for this muscle group will be added soon!</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        exerciseGrid.innerHTML = html;
+    }
+    
+    function createExerciseCard(exercise) {
+        return `
+            <div class="col-lg-6 col-xl-4">
+                <div class="card exercise-card">
+                    <div class="exercise-header">
+                        <div class="exercise-title">
+                            <i class="bi bi-lightning-charge"></i>
+                            ${exercise.name}
+                        </div>
+                        <div class="exercise-meta">
+                            <span class="meta-item">
+                                <i class="bi bi-stopwatch"></i>
+                                ${exercise.sets} sets × ${exercise.reps}
+                            </span>
+                            <span class="meta-item">
+                                <i class="bi bi-gear"></i>
+                                ${exercise.equipment}
+                            </span>
+                            <span class="difficulty ${exercise.difficulty}">
+                                ${exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="exercise-body">
+                        <div class="technique-section">
+                            <div class="section-title">
+                                <i class="bi bi-list-ol"></i>
+                                How to Perform
+                            </div>
+                            <ol class="step-list">
+                                ${exercise.steps.map((step, index) => 
+                                    `<li data-step="${index + 1}">${step}</li>`
+                                ).join('')}
+                            </ol>
+                        </div>
+                        
+                        <div class="technique-section">
+                            <div class="section-title">
+                                <i class="bi bi-lightbulb"></i>
+                                Pro Tips
+                            </div>
+                            <ul class="tips-list">
+                                ${exercise.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="common-mistakes">
+                            <h6><i class="bi bi-exclamation-triangle"></i> Common Mistakes</h6>
+                            ${exercise.mistakes.map(mistake => 
+                                `<div class="mistake-item">• ${mistake}</div>`
+                            ).join('')}
+                        </div>
+                        
+                        <button class="add-to-workout-btn" onclick="addToWorkout('${exercise.name}')">
+                            <i class="bi bi-plus-circle"></i> Add to My Workout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+});
+
+function addToWorkout(exerciseName) {
+    // Show success message
+    alert(`✅ Added "${exerciseName}" to your workout plan!`);
+    
+    // You can implement actual workout logging here
+    // For example, send AJAX request to Django backend
+}
+</script>
+{% endblock %}

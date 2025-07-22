@@ -1,0 +1,146 @@
+{% extends 'habits/base.html' %}
+
+{% block title %}Edit {{ habit.name }} - HabitHero{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="bi bi-pencil me-2"></i>Edit Habit</h3>
+                <p class="text-muted mb-0">Modify your habit details</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-tag me-2"></i>Habit Name *
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                        {% endif %}
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.name.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-journal-text me-2"></i>Description
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.help_text %}
+                            <div class="form-text">{{ form.description.help_text }}</div>
+                        {% endif %}
+                        {% if form.description.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.description.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.color.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-palette me-2"></i>Habit Color
+                        </label>
+                        <div class="d-flex align-items-center gap-3">
+                            {{ form.color }}
+                            <span class="text-muted">Choose a color to represent your habit</span>
+                        </div>
+                        {% if form.color.help_text %}
+                            <div class="form-text">{{ form.color.help_text }}</div>
+                        {% endif %}
+                        {% if form.color.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.color.errors %}
+                                    <small><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-lg me-2"></i>Update Habit
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Habit Stats Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Habit Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-primary">{{ habit.current_streak }}</h4>
+                            <small class="text-muted">Current Streak</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-success">{{ habit.completion_percentage|floatformat:0 }}%</h4>
+                            <small class="text-muted">This Month</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-info">{{ habit.created_at|timesince }}</h4>
+                            <small class="text-muted">Habit Age</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded">
+                            <a href="{% url 'habit_calendar' habit.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-calendar me-1"></i>View Calendar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    input[type="color"] {
+        width: 60px;
+        height: 45px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

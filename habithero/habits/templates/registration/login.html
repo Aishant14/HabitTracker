@@ -1,0 +1,68 @@
+{% extends 'habits/base.html' %}
+
+{% block title %}Login - HabitHero{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="bi bi-box-arrow-in-right me-2"></i>Welcome Back!</h3>
+                <p class="text-muted mb-0">Continue your habit-building journey</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Login failed!</strong> Please check your username and password.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" id="{{ form.username.id_for_label }}" 
+                               placeholder="Enter your username" value="{{ form.username.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="{{ form.password.id_for_label }}" 
+                               placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-shield-check me-2"></i>Login to HabitHero
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Don't have an account yet? 
+                        <a href="{% url 'signup' %}" class="text-decoration-none">Sign up here</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+</style>
+{% endblock %}
