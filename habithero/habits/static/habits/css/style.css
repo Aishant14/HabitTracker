@@ -1,0 +1,107 @@
+/* Variables and Resets */
+:root {
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --accent-color: #ec4899;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --dark-color: #0f172a;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at 20% 20%, #020617, #0f172a);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+
+.hero-title {
+    font-size: 3.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+}
+
+.stats-card {
+    background: rgba(30, 41, 59, 0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+}
+
+.animate-fadeIn {
+    transition: opacity 1s ease-out;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-link {
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.completion-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.completion-btn.completed {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    padding: 0.7rem 2rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.streak-badge {
+    background: var(--warning-color);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+}
+
+.toast-container {
+    backdrop-filter: blur(20px);
+}
