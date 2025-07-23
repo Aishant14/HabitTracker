@@ -136,16 +136,33 @@ function toggleHabit(habitId, button) {
     button.innerHTML = '<i class="bi bi-hourglass-split"></i>';
     button.disabled = true;
 
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                      document.querySelector('meta[name="csrf-token"]')?.content;
+    
+    if (!csrfToken) {
+        showToast('CSRF token not found. Please refresh the page.', 'error');
+        button.innerHTML = originalContent;
+        button.disabled = false;
+        return;
+    }
+
     fetch(`/toggle/${habitId}/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-CSRFToken': csrfToken,
             'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
-        // Update button state with animation
+        // Update button state
         if (data.completed) {
             button.classList.add('completed');
             button.innerHTML = '<i class="bi bi-check"></i>';
@@ -155,57 +172,91 @@ function toggleHabit(habitId, button) {
             button.innerHTML = '<i class="bi bi-check"></i>';
         }
         
-        // Show enhanced toast
-        showEnhancedToast(data.message, data.completed ? 'success' : 'info');
+        // Show toast notification
+        showToast(data.message, data.completed ? 'success' : 'info');
         
-        // Update streak display with animation
+        // Update streak display
         const streakBadge = button.closest('.card-body').querySelector('.streak-badge');
         if (data.streak > 0 && streakBadge) {
             streakBadge.innerHTML = `🔥 ${data.streak} day${data.streak > 1 ? 's' : ''}`;
             streakBadge.style.animation = 'bounce 0.5s ease-in-out';
         }
         
-        // Update stats with smooth transition
-        updateStatsWithAnimation();
+        // Update stats after a short delay (don't reload page)
+        setTimeout(() => {
+            updateStatsDisplay();
+        }, 500);
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error toggling habit:', error);
         button.innerHTML = originalContent;
-        showEnhancedToast('An error occurred. Please try again.', 'error');
+        showToast('Failed to update habit. Please try again.', 'error');
     })
     .finally(() => {
         button.disabled = false;
     });
 }
 
-function showEnhancedToast(message, type = 'success') {
-    const toast = document.createElement('div');
-    toast.className = `enhanced-toast toast-${type}`;
+// Simple toast notification function
+function showToast(message, type = 'success') {
+    // Remove any existing toasts
+    const existingToasts = document.querySelectorAll('.custom-toast');
+    existingToasts.forEach(toast => toast.remove());
     
-    const icon = {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast toast-${type}`;
+    
+    const iconClass = {
         success: 'bi-check-circle-fill',
-        error: 'bi-exclamation-triangle-fill',
+        error: 'bi-exclamation-triangle-fill', 
         info: 'bi-info-circle-fill'
-    }[type];
+    }[type] || 'bi-info-circle-fill';
     
     toast.innerHTML = `
-        <i class="bi ${icon}"></i>
-        <span>${message}</span>
-        <button class="toast-close" onclick="this.parentElement.remove()">
-            <i class="bi bi-x"></i>
-        </button>
+        <div class="toast-content">
+            <i class="bi ${iconClass}"></i>
+            <span>${message}</span>
+            <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add styles dynamically
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease-out;
     `;
     
     document.body.appendChild(toast);
     
-    requestAnimationFrame(() => {
-        toast.classList.add('show');
-    });
-    
+    // Auto remove after 4 seconds
     setTimeout(() => {
-        toast.classList.remove('show');
+        toast.style.animation = 'slideOutRight 0.3s ease-in';
         setTimeout(() => toast.remove(), 300);
     }, 4000);
+}
+
+// Update stats display without reloading
+function updateStatsDisplay() {
+    const statsNumbers = document.querySelectorAll('.stats-number');
+    statsNumbers.forEach(stat => {
+        stat.style.animation = 'pulse 0.3s ease-in-out';
+    });
+}
+
+// Enhanced toast function (keeping for compatibility)
+function showEnhancedToast(message, type = 'success') {
+    showToast(message, type);
 }
 
 function updateStatsWithAnimation() {
