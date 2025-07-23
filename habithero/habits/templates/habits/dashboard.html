@@ -8,36 +8,22 @@
     <p class="text-white-50">Track your habits and build your streak empire</p>
 </div>
 
-<!-- Stats Overview -->
+<!-- Dynamic Stats Overview -->
 <div class="row mb-4" id="stats-container">
-    <div class="col-md-3">
-        <div class="stats-card" data-animate="true">
-            <i class="bi bi-list-check display-4 mb-3 text-primary"></i>
-            <div class="stats-number">{{ habits.count }}</div>
-            <p class="mb-0">Active Habits</p>
+    {% for stat in dashboard_stats %}
+        <div class="col-md-3">
+            <div class="stats-card" data-animate="true" data-tooltip="{{ stat.description }}">
+                <i class="bi {{ stat.icon }} display-4 mb-3 {{ stat.color_class }}"></i>
+                <div class="stats-number">{{ stat.value }}</div>
+                <p class="mb-0">{{ stat.label }}</p>
+                {% if stat.trend %}
+                    <small class="stats-trend {{ stat.trend_class }}">
+                        <i class="bi {{ stat.trend_icon }}"></i> {{ stat.trend_text }}
+                    </small>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card" data-animate="true">
-            <i class="bi bi-check-circle-fill display-4 mb-3 text-success"></i>
-            <div class="stats-number">{{ today_completions|length }}</div>
-            <p class="mb-0">Completed Today</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card" data-animate="true">
-            <i class="bi bi-award-fill display-4 mb-3 text-warning"></i>
-            <div class="stats-number">{{ user_badges.count }}</div>
-            <p class="mb-0">Badges Earned</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card" data-animate="true">
-            <i class="bi bi-fire display-4 mb-3 text-danger"></i>
-            <div class="stats-number">{{ total_streaks }}</div>
-            <p class="mb-0">Total Streaks</p>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 <!-- Habits Section -->

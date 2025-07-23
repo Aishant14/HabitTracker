@@ -32,27 +32,70 @@ def signup(request):
 @login_required
 def dashboard(request):
     """Main dashboard showing all user habits"""
-    habits = Habit.objects.filter(user=request.user, is_active=True)
-    today = date.today()
+    from .utils import HabitAnalytics, get_motivational_message
     
-    # Get today's completions
-    today_completions = HabitCompletion.objects.filter(
-        habit__user=request.user, 
-        date=today
-    ).values_list('habit_id', flat=True)
+    # Use the analytics class for comprehensive data
+    analytics = HabitAnalytics(request.user)
+    dashboard_stats = analytics.get_dashboard_stats()
+    weekly_summary = analytics.get_weekly_summary()
     
-    # Get user's badges
-    user_badges = UserBadge.objects.filter(user=request.user).select_related('badge')
+    # Add motivational messages to habits
+    for habit in dashboard_stats['habits']:
+        completion_rate = analytics.get_completion_rate(habit)
+        habit.motivational_message = get_motivational_message(
+            completion_rate, habit.current_streak
+        )
+        habit.completion_rate_30d = completion_rate
+        habit.longest_streak_ever = analytics.get_longest_streak(habit)
     
-    # Calculate total streaks (sum of all current streaks)
-    total_streaks = sum(habit.current_streak for habit in habits)
+    # Create structured dashboard stats for template
+    dashboard_stats_display = [
+        {
+            'icon': 'bi-list-check',
+            'value': dashboard_stats['active_habits'],
+            'label': 'Active Habits',
+            'color_class': 'text-primary',
+            'description': 'Total number of active habits you are tracking',
+            'trend': None
+        },
+        {
+            'icon': 'bi-check-circle-fill',
+            'value': dashboard_stats['today_completions'],
+            'label': 'Completed Today',
+            'color_class': 'text-success',
+            'description': 'Habits completed today',
+            'trend': f"{dashboard_stats['today_completions']}/{dashboard_stats['active_habits']}" if dashboard_stats['active_habits'] > 0 else None,
+            'trend_class': 'text-success' if dashboard_stats['today_completions'] > 0 else 'text-muted',
+            'trend_icon': 'bi-arrow-up' if dashboard_stats['today_completions'] > 0 else 'bi-dash',
+            'trend_text': f"{round((dashboard_stats['today_completions'] / max(dashboard_stats['active_habits'], 1)) * 100, 0)}% complete" if dashboard_stats['active_habits'] > 0 else '0% complete'
+        },
+        {
+            'icon': 'bi-award-fill',
+            'value': dashboard_stats['total_badges'],
+            'label': 'Badges Earned',
+            'color_class': 'text-warning',
+            'description': 'Achievement badges earned',
+            'trend': None
+        },
+        {
+            'icon': 'bi-fire',
+            'value': dashboard_stats['total_streaks'],
+            'label': 'Total Streaks',
+            'color_class': 'text-danger',
+            'description': 'Sum of all current habit streaks',
+            'trend': f"Avg: {round(dashboard_stats['avg_completion_rate'], 1)}%" if dashboard_stats['avg_completion_rate'] > 0 else None,
+            'trend_class': 'text-info' if dashboard_stats['avg_completion_rate'] >= 70 else 'text-warning' if dashboard_stats['avg_completion_rate'] >= 50 else 'text-danger',
+            'trend_icon': 'bi-graph-up' if dashboard_stats['avg_completion_rate'] >= 70 else 'bi-graph-down-arrow',
+            'trend_text': f"{round(dashboard_stats['avg_completion_rate'], 1)}% avg rate"
+        }
+    ]
     
     context = {
-        'habits': habits,
-        'today_completions': list(today_completions),
-        'user_badges': user_badges,
-        'total_streaks': total_streaks,
-        'today': today,
+        **dashboard_stats,
+        'dashboard_stats': dashboard_stats_display,
+        'weekly_summary': weekly_summary,
+        'analytics': analytics,
+        'today': date.today(),
     }
     
     return render(request, 'habits/dashboard.html', context)
