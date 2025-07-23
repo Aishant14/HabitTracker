@@ -1,44 +1,23 @@
 {% extends 'habits/base.html' %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="hero-section">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-8 text-center">
             <h1 class="hero-title">🏆 HabitHero</h1>
             <p class="hero-subtitle">Build better habits, one day at a time</p>
             <div class="d-flex gap-3 justify-content-center">
-                <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-person-plus me-2"></i>Get Started
-                </a>
-                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                </a>
+                {% action_button 'signup' 'bi-person-plus' 'Get Started' 'btn-primary btn-lg' %}
+                {% action_button 'login' 'bi-box-arrow-in-right' 'Login' 'btn-outline-light btn-lg' %}
             </div>
         </div>
     </div>
     
     <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="stats-card">
-                <i class="bi bi-graph-up-arrow display-4 mb-3"></i>
-                <h5>Track Progress</h5>
-                <p>Visualize your habit streaks and completion rates</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stats-card">
-                <i class="bi bi-award-fill display-4 mb-3"></i>
-                <h5>Earn Badges</h5>
-                <p>Unlock achievements for maintaining streaks</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stats-card">
-                <i class="bi bi-calendar-check display-4 mb-3"></i>
-                <h5>Daily Check-ins</h5>
-                <p>Simple, quick habit completion tracking</p>
-            </div>
-        </div>
+        {% stats_card "bi-graph-up-arrow" "Track" "Progress" "" "4" %}
+        {% stats_card "bi-award-fill" "Earn" "Badges" "" "4" %}
+        {% stats_card "bi-calendar-check" "Daily" "Check-ins" "" "4" %}
     </div>
 </div>
 {% endblock %}

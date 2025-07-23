@@ -122,123 +122,14 @@
 
             <!-- Features Preview -->
             <div class="features-preview">
-                <div class="feature-item">
-                    <i class="bi bi-trophy"></i>
-                    <span>Earn Achievements</span>
-                </div>
-                <div class="feature-item">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Track Progress</span>
-                </div>
-                <div class="feature-item">
-                    <i class="bi bi-lightning"></i>
-                    <span>Build Streaks</span>
-                </div>
+                <div class="feature-item" data-feature="achievements"><i class="bi bi-trophy"></i><span>Earn Achievements</span></div>
+                <div class="feature-item" data-feature="progress"><i class="bi bi-graph-up"></i><span>Track Progress</span></div>
+                <div class="feature-item" data-feature="streaks"><i class="bi bi-lightning"></i><span>Build Streaks</span></div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-/* Particles Background */
-.particles-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.particle {
-    position: absolute;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    border-radius: 50%;
-    opacity: 0.1;
-    animation: float 20s infinite linear;
-}
-
-.particle:nth-child(1) {
-    width: 3px;
-    height: 3px;
-    left: 10%;
-    animation-duration: 25s;
-    animation-delay: -5s;
-}
-
-.particle:nth-child(2) {
-    width: 4px;
-    height: 4px;
-    left: 20%;
-    animation-duration: 18s;
-    animation-delay: -2s;
-}
-
-.particle:nth-child(3) {
-    width: 2px;
-    height: 2px;
-    left: 30%;
-    animation-duration: 22s;
-    animation-delay: -8s;
-}
-
-.particle:nth-child(4) {
-    width: 5px;
-    height: 5px;
-    left: 40%;
-    animation-duration: 16s;
-    animation-delay: -4s;
-}
-
-.particle:nth-child(5) {
-    width: 3px;
-    height: 3px;
-    left: 60%;
-    animation-duration: 28s;
-    animation-delay: -10s;
-}
-
-.particle:nth-child(6) {
-    width: 4px;
-    height: 4px;
-    left: 70%;
-    animation-duration: 20s;
-    animation-delay: -3s;
-}
-
-.particle:nth-child(7) {
-    width: 2px;
-    height: 2px;
-    left: 80%;
-    animation-duration: 24s;
-    animation-delay: -7s;
-}
-
-.particle:nth-child(8) {
-    width: 6px;
-    height: 6px;
-    left: 90%;
-    animation-duration: 15s;
-    animation-delay: -1s;
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.1;
-    }
-    90% {
-        opacity: 0.1;
-    }
-    100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-    }
-}
 
 /* Main Container */
 .signup-container {

@@ -44,10 +44,14 @@ def dashboard(request):
     # Get user's badges
     user_badges = UserBadge.objects.filter(user=request.user).select_related('badge')
     
+    # Calculate total streaks (sum of all current streaks)
+    total_streaks = sum(habit.current_streak for habit in habits)
+    
     context = {
         'habits': habits,
         'today_completions': list(today_completions),
         'user_badges': user_badges,
+        'total_streaks': total_streaks,
         'today': today,
     }
     

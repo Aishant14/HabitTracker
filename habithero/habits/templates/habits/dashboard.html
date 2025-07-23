@@ -3,40 +3,38 @@
 {% block title %}Dashboard - HabitHero{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h2 class="text-white text-center">Welcome back, {{ user.username }}! 🎯</h2>
-        <p class="text-center text-white-50">Track your habits and build your streak empire</p>
-    </div>
+<div class="dashboard-header text-center mb-4">
+    <h2 class="text-white">Welcome back, {{ user.username }}! 🎯</h2>
+    <p class="text-white-50">Track your habits and build your streak empire</p>
 </div>
 
 <!-- Stats Overview -->
-<div class="row mb-4">
+<div class="row mb-4" id="stats-container">
     <div class="col-md-3">
-        <div class="stats-card">
+        <div class="stats-card" data-animate="true">
             <i class="bi bi-list-check display-4 mb-3 text-primary"></i>
             <div class="stats-number">{{ habits.count }}</div>
             <p class="mb-0">Active Habits</p>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="stats-card">
+        <div class="stats-card" data-animate="true">
             <i class="bi bi-check-circle-fill display-4 mb-3 text-success"></i>
             <div class="stats-number">{{ today_completions|length }}</div>
             <p class="mb-0">Completed Today</p>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="stats-card">
+        <div class="stats-card" data-animate="true">
             <i class="bi bi-award-fill display-4 mb-3 text-warning"></i>
             <div class="stats-number">{{ user_badges.count }}</div>
             <p class="mb-0">Badges Earned</p>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="stats-card">
+        <div class="stats-card" data-animate="true">
             <i class="bi bi-fire display-4 mb-3 text-danger"></i>
-            <div class="stats-number">{% for habit in habits %}{{ habit.current_streak|add:0 }}{% if not forloop.last %}+{% endif %}{% endfor %}</div>
+            <div class="stats-number">{{ total_streaks }}</div>
             <p class="mb-0">Total Streaks</p>
         </div>
     </div>
@@ -54,69 +52,13 @@
             </div>
             <div class="card-body">
                 {% if habits %}
-                    <div class="row g-3">
+                    <div class="row g-3" id="habits-list">
                         {% for habit in habits %}
-                        <div class="col-12">
-                            <div class="habit-card card mb-2" style="border-left-color: {{ habit.color }}">
-                                <div class="card-body d-flex align-items-center justify-content-between">
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex align-items-center">
-                                            <h6 class="mb-1 me-3">{{ habit.name }}</h6>
-                                            {% if habit.current_streak > 0 %}
-                                                <span class="streak-badge">
-                                                    🔥 {{ habit.current_streak }} day{{ habit.current_streak|pluralize }}
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                        {% if habit.description %}
-                                            <small class="text-muted">{{ habit.description|truncatewords:10 }}</small>
-                                        {% endif %}
-                                        <div class="mt-2">
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar" role="progressbar" 
-                                                     style="width: {{ habit.completion_percentage }}%; background-color: {{ habit.color }};">
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">{{ habit.completion_percentage|floatformat:0 }}% this month</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <button class="completion-btn {% if habit.id in today_completions %}completed{% endif %}" 
-                                                onclick="toggleHabit({{ habit.id }}, this)">
-                                            <i class="bi bi-check"></i>
-                                        </button>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary" type="button" 
-                                                    data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="{% url 'habit_calendar' habit.id %}">
-                                                    <i class="bi bi-calendar me-2"></i>View Calendar
-                                                </a></li>
-                                                <li><a class="dropdown-item" href="{% url 'edit_habit' habit.id %}">
-                                                    <i class="bi bi-pencil me-2"></i>Edit
-                                                </a></li>
-                                                <li><a class="dropdown-item text-danger" href="{% url 'delete_habit' habit.id %}">
-                                                    <i class="bi bi-trash me-2"></i>Delete
-                                                </a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            {% include 'habits/components/habit_card.html' %}
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-plus-circle display-1 text-muted"></i>
-                        <h5 class="text-muted mt-3">No habits yet</h5>
-                        <p class="text-muted">Start your journey by adding your first habit!</p>
-                        <a href="{% url 'add_habit' %}" class="btn btn-primary">
-                            <i class="bi bi-plus me-2"></i>Add Your First Habit
-                        </a>
-                    </div>
+                    {% include 'habits/components/empty_state.html' with title="No habits yet" message="Start your journey by adding your first habit!" action_url="add_habit" action_text="Add Your First Habit" %}
                 {% endif %}
             </div>
         </div>

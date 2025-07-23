@@ -1,0 +1,8 @@
+<!-- Reusable Stats Card Component -->
+<div class="col-md-{{ col_size|default:"3" }}">
+    <div class="stats-card" data-animate="true">
+        <i class="bi {{ icon }} display-4 mb-3 {{ icon_color|default:"text-primary" }}"></i>
+        <div class="stats-number">{{ value }}</div>
+        <p class="mb-0">{{ label }}</p>
+    </div>
+</div>
